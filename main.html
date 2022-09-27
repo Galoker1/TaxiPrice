@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+  <html lang='ru' dir='ltr'>
+    <head>
+      <meta charset='utf-8'>
+      <style media="screen">
+
+        input{
+          margin-top: 10px;
+          border: 2px solid black;
+          width: 95%;
+          font-size: 20px;
+          font-family: "Arial Black",serif;
+          border-radius: 10px;
+
+
+        }
+        input:focus {
+          margin-top: 10px;
+          border: none;
+          width: 95%;
+          font-size: 20px;
+          font-family: "Arial Black",serif;
+          border-radius: 0;
+        }
+        body{
+          background-color: #333333;
+
+        }
+        h1{
+          width: 100%;
+          text-align: center;
+          color: #cccc00;
+          font-family: "Arial Black",serif
+        }
+        #result{
+          width: 100%;
+          text-align: center;
+          font-size: 20px;
+          margin-top: 20px;
+        }
+        button{
+          border: none;
+          font-family: "Arial Black",serif;
+          font-size: 20px;
+          margin-top: 50px;
+          height: 50px;
+          width: 50%;
+          margin-left: 20%;
+          border-radius: 10px;
+          background-color: #cccc00;
+          color: #333333;
+
+        }
+        #result{
+          font-size: 20px;
+          font-family: "Arial Black",serif;
+          color: azure;
+          width: 100%;
+          text-align: center;
+        }
+      </style>
+      <title></title>
+    </head>
+    <body>
+      <h1>PriceTaxi</h1>
+      <form class='' action='index.html' method='post'>
+          <input type='text' id='ad_a' value=''><br>
+          <input type='text' id='ad_b' value=''><br>
+          <input type='number' id='pri' value=''><br>
+
+      </form>
+      <p id = "result"></p>
+      <br>
+      <button type="button" onclick='send_new()' id="run_button"name="button">Run</button>
+      <button type="button" onclick='stop_button()' id="stop_button"name="button">Stop</button>
+      <script type="text/javascript">
+        let k = 0;
+        document.getElementById('stop_button').hidden = true;
+      async function send_new(name,surname,email,phone){
+        k = 0;
+        let data = 0;
+        let adress_a = document.getElementById('ad_a').value;
+        let adress_b = document.getElementById('ad_b').value;
+        let price = document.getElementById('pri').value;
+
+        document.getElementById('run_button').hidden = true;
+        document.getElementById('stop_button').hidden = false;
+        while (k === 0){
+          let url = "http://192.168.50.136:11002/create?adress_a=" + adress_a + "&adress_b=" + adress_b + "&price=" + price;
+          const response = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          console.log(response)
+          let z = response["statusText"].length;
+          let res = response["statusText"].slice(3,z);
+          if (parseInt(res)!==99999){
+            document.getElementById("result").innerHTML = res ;
+          }
+
+          if(parseInt(res) < parseInt(price))
+            {
+              document.getElementById('run_button').hidden = false;
+              document.getElementById('stop_button').hidden = true;
+              k = 1;
+              await stop_button();
+
+              alert("Найдена приемлемая Цена :" + res);
+
+            }
+        if (k===1){
+          break;
+        }
+        }
+
+}
+      async function stop_button(){
+        document.getElementById('run_button').hidden = false;
+        document.getElementById('stop_button').hidden = true;
+        k = 1;
+
+
+
+      }
+      async function close_alert(){
+
+      }
+      </script>
+    </body>
+  </html>
